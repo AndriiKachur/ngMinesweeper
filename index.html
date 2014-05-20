@@ -10,9 +10,11 @@
 
     <div ng-controller="MainCtrl">
 
-            <div ng-repeat="row in board.rows" class="fieldRow">
-                <div class="field" ng-repeat="field in row" ng-class="className(field)"
-                        ng-click="toggleField(field)"
+            <div ng-repeat="row in board.rows" class="fieldRow" ng-init="rowx = $index">
+                <div class="field" ng-repeat="field in row"
+                        ng-class="{flagged: field.flag}"
+                        ng-init="rowy = $index"
+                        ng-click="toggleField(field, rowx, rowy)"
                         ng-right-click="markField(field)">
                     <div ng-if="field.open">{{field.value}}</div>
                 </div>

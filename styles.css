@@ -17,10 +17,10 @@
 }
 
 .flagged {
-    background-color: red;
-    margin: 5px auto 5px;
+    background-color: green;
 }
 
 .message {
     border: 1px solid bisque;
+    margin: 5px auto 5px;
 }
