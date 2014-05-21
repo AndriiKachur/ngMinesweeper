@@ -15,6 +15,11 @@ angular.module('ngMinesweeper', [])
                 dateStarted = new Date();
             }
         }
+        function stopGame() {
+            Game.stopped = true;
+            started = false;
+            dateStarted = null;
+        }
         function getSpentTime() {
             var timeSpent = new Date().getTime() - dateStarted.getTime();
             return (timeSpent/1000 | 0) + 's ' + (timeSpent % 1000) + 'ms';
@@ -30,15 +35,13 @@ angular.module('ngMinesweeper', [])
         function checkEndGame() {
             if (Game.isGameEnded()) {
                 $scope.message = 'Nice work! Time spent: ' + getSpentTime();
-                Game.stopped = true;
-                started = false;
-                dateStarted = null;
+                stopGame();
             }
         }
 
         $scope.resetGame = function() {
-            started = false;
-            dateStarted = null;
+            stopGame();
+            $scope.message = '';
             Game.resetGame();
         };
 
@@ -72,9 +75,9 @@ angular.module('ngMinesweeper', [])
             if (f.flag) return;
 
             if (f.value === C.mine) {
-                Game.stopped = true;
-                $scope.message = 'Oooops, minesweeper has only one chance for mistake...';
+                $scope.message = 'Oooops, minesweeper has only one chance for mistake, and you failed it.';
                 f.open = true;
+                stopGame();
                 return;
             }
             startGame();
