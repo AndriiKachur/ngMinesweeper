@@ -2,6 +2,7 @@ angular.module('ngMinesweeper', [])
     .controller('MainCtrl', function($scope, Game, C, $interval) {
 
         Game.resetGame();
+        $scope.CONST = C;
         $scope.game = Game;
         $scope.board = Game.board;
         $scope.message = '';
@@ -118,21 +119,25 @@ angular.module('ngMinesweeper', [])
             mines: 10,
             board: {},
             stopped: false,
-            minesCache: [],
 
             isGameEnded: function() {
-                var hasNotFoundMines = Array.prototype.some.call(game.minesCache, function(mineField) {
-                        if (!mineField.flag) {
-                            return true;
+                var hasNotOpenFields = false,
+                    field;
+                for (var i = 0; i < game.side; ++i) {
+                    for (var j = 0; j < game.side; ++j) {
+                        field = game.board.rows[i][j];
+                        if (field.value !== C.mine && field.open === false) {
+                            hasNotOpenFields = true;
+                            break;
                         }
-                    });
-                return !game.stopped && !hasNotFoundMines;
+                    }
+                }
+                return !game.stopped && !hasNotOpenFields;
             },
 
             resetGame: function () {
                 game.stopped = false;
                 game.board.rows = [];
-                game.minesCache = [];
                 for (var i = 0, row; i < game.side; ++i) {
                     row = [];
                     for (var j = 0; j < game.side; ++j) {
@@ -153,7 +158,6 @@ angular.module('ngMinesweeper', [])
                             return;
                         }
                         field.value = C.mine;
-                        game.minesCache.push(field);
                         return true;
                     }
                     function isMined(x, y) {
