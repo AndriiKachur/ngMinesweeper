@@ -1,17 +1,46 @@
 angular.module('ngMinesweeper', [])
-    .controller('MainCtrl', function($scope, Game, C) {
+    .controller('MainCtrl', function($scope, Game, C, $interval) {
 
         Game.resetGame();
         $scope.game = Game;
         $scope.board = Game.board;
         $scope.message = '';
+        $scope.timeSpent = null;
+
+        var started = false,
+            dateStarted;
+        function startGame() {
+            if (!started) {
+                started = true;
+                dateStarted = new Date();
+            }
+        }
+        function getSpentTime() {
+            var timeSpent = new Date().getTime() - dateStarted.getTime();
+            return (timeSpent/1000 | 0) + 's ' + (timeSpent % 1000) + 'ms';
+        }
+        $interval(function() {
+            if (started && dateStarted) {
+                $scope.timeSpent = getSpentTime();
+            } else {
+                $scope.timeSpent = 'Game is not started yet';
+            }
+        }, 50);
 
         function checkEndGame() {
             if (Game.isGameEnded()) {
-                $scope.message = 'Nice work!';
+                $scope.message = 'Nice work! Time spent: ' + getSpentTime();
                 Game.stopped = true;
+                started = false;
+                dateStarted = null;
             }
         }
+
+        $scope.resetGame = function() {
+            started = false;
+            dateStarted = null;
+            Game.resetGame();
+        };
 
         $scope.toggleField = function(f, x, y) {
             var processed = [];
@@ -48,6 +77,7 @@ angular.module('ngMinesweeper', [])
                 f.open = true;
                 return;
             }
+            startGame();
             openField(f, x, y);
             angular.forEach(processed, function(field) {
                 delete field.processed;
@@ -58,8 +88,9 @@ angular.module('ngMinesweeper', [])
             if (Game.stopped) return;
             if (f.open) return;
 
+            startGame();
             f.flag = !f.flag;
-             checkEndGame();
+            checkEndGame();
         };
 
 
@@ -82,7 +113,7 @@ angular.module('ngMinesweeper', [])
         var game = {
             side: 10,
             mines: 10,
-            board: null,
+            board: {},
             stopped: false,
             minesCache: [],
 
@@ -97,7 +128,6 @@ angular.module('ngMinesweeper', [])
 
             resetGame: function () {
                 game.stopped = false;
-                game.board = {};
                 game.board.rows = [];
                 game.minesCache = [];
                 for (var i = 0, row; i < game.side; ++i) {

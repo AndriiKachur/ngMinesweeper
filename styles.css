@@ -24,3 +24,9 @@
     border: 1px solid bisque;
     margin: 5px auto 5px;
 }
+
+.timer {
+    margin: 7px auto 7px 20px;
+    font-weight: 200;
+    color: cadetblue;
+}
