@@ -22,11 +22,13 @@
 
         <div class="clearfix"></div>
 
+        <div class="timer">{{timeSpent}}</div>
+
         <div ng-show="message" ng-bind="message" class="message">
         </div>
 
         <div>
-            <button ng-click="game.resetGame()">Reset Game</button>
+            <button ng-click="resetGame()">Reset Game</button>
         </div>
 
     </div>
