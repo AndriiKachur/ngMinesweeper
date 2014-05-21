@@ -20,6 +20,10 @@
     background-color: green;
 }
 
+.mine {
+    background-color: orange;
+}
+
 .message {
     border: 1px solid bisque;
     margin: 5px auto 5px;
